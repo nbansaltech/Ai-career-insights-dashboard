@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Career Insights Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>AI Career Insights Dashboard</h1>
+    <p>Analyze tech skill trends, salaries, and demand using mock AI data.</p>
+  </header>
+
+  <main>
+    <section class="cards">
+      <div class="card">
+        <h2>Total Skills Analyzed</h2>
+        <p id="total-skills">--</p>
+      </div>
+      <div class="card">
+        <h2>Top Skill</h2>
+        <p id="top-skill">--</p>
+      </div>
+      <div class="card">
+        <h2>Average Salary</h2>
+        <p id="avg-salary">--</p>
+      </div>
+    </section>
+
+    <section class="charts">
+      <div class="chart-container">
+        <h3>Skill Demand (2025)</h3>
+        <canvas id="skillChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h3>Average Salary by Skill ($)</h3>
+        <canvas id="salaryChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h3>Skill Growth Rate (%)</h3>
+        <canvas id="growthChart"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Nishant Bansal — AI Career Insights Dashboard | Built with HTML, CSS & JS</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
