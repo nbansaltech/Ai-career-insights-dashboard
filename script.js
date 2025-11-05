@@ -1,71 +1,170 @@
-// Mock AI dataset
-const mockData = [
-  { skill: "Python", demand: 95, salary: 125000, growth: 15 },
-  { skill: "JavaScript", demand: 90, salary: 118000, growth: 12 },
-  { skill: "Java", demand: 80, salary: 110000, growth: 9 },
-  { skill: "React", demand: 85, salary: 120000, growth: 14 },
-  { skill: "Next.js", demand: 70, salary: 130000, growth: 16 },
-  { skill: "SQL", demand: 75, salary: 102000, growth: 8 },
-  { skill: "Node.js", demand: 65, salary: 112000, growth: 10 },
-  { skill: "C++", demand: 60, salary: 108000, growth: 7 },
-  { skill: "Pandas", demand: 55, salary: 98000, growth: 6 },
-  { skill: "Scikit-learn", demand: 50, salary: 105000, growth: 9 }
-];
+// ======== SMART RESUME ANALYZER (MOCK AI) ========
 
-// Update dashboard cards
-document.getElementById("total-skills").textContent = mockData.length;
-const topSkill = mockData.reduce((a, b) => (a.demand > b.demand ? a : b));
-document.getElementById("top-skill").textContent = topSkill.skill;
-const avgSalary = mockData.reduce((acc, d) => acc + d.salary, 0) / mockData.length;
-document.getElementById("avg-salary").textContent = `$${avgSalary.toLocaleString()}`;
-
-// Generate charts
-const skillNames = mockData.map(d => d.skill);
-const demandValues = mockData.map(d => d.demand);
-const salaryValues = mockData.map(d => d.salary);
-const growthValues = mockData.map(d => d.growth);
-
-const ctx1 = document.getElementById("skillChart");
-new Chart(ctx1, {
-  type: "bar",
-  data: {
-    labels: skillNames,
-    datasets: [{
-      label: "Demand (%)",
-      data: demandValues,
-      backgroundColor: "#2563ebaa"
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: false } } }
+// Theme toggle
+const themeToggle = document.getElementById("themeToggle");
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+  themeToggle.textContent =
+    document.body.classList.contains("light-mode")
+      ? "🌙 Dark Mode"
+      : "☀️ Light Mode";
 });
 
-const ctx2 = document.getElementById("salaryChart");
-new Chart(ctx2, {
-  type: "line",
-  data: {
-    labels: skillNames,
-    datasets: [{
-      label: "Average Salary",
-      data: salaryValues,
-      borderColor: "#60a5fa",
-      fill: true,
-      tension: 0.3
-    }]
-  },
-  options: { responsive: true }
+// Core elements
+const analyzeBtn = document.getElementById("analyzeBtn");
+const loadingEl = document.getElementById("loading");
+const resultsSection = document.getElementById("resultsSection");
+const scoreValue = document.getElementById("scoreValue");
+const skillBars = document.getElementById("skillBars");
+const strengthsList = document.getElementById("strengthsList");
+const improvementsList = document.getElementById("improvementsList");
+
+// Animate skill bars
+function animateSkillBars(skills) {
+  skillBars.innerHTML = "";
+  Object.entries(skills).forEach(([skill, value]) => {
+    const bar = document.createElement("div");
+    bar.innerHTML = `
+      <div class="skill-label">
+        <span>${skill}</span>
+        <span>${value}%</span>
+      </div>
+      <div class="skill-bar"><div class="skill-fill"></div></div>
+    `;
+    skillBars.appendChild(bar);
+    setTimeout(() => {
+      bar.querySelector(".skill-fill").style.width = value + "%";
+    }, 100);
+  });
+}
+
+// Mock AI analysis
+function mockAIAnalyze(text) {
+  const baseScore = 60 + Math.random() * 30;
+  const keywords = ["Python","JavaScript","React","Node","Machine Learning","SQL"];
+  const skills = {};
+
+  keywords.forEach(k => {
+    skills[k] = text.toLowerCase().includes(k.toLowerCase())
+      ? 70 + Math.floor(Math.random() * 25)
+      : 30 + Math.floor(Math.random() * 20);
+  });
+
+  const strengths = [];
+  const improvements = [];
+
+  for (const [skill, val] of Object.entries(skills)) {
+    if (val > 70) strengths.push(`${skill} proficiency`);
+    else improvements.push(`Improve your ${skill} fundamentals`);
+  }
+
+  if (text.length < 200) {
+    improvements.push("Add more detail — the resume seems too short.");
+  } else {
+    strengths.push("Good overall detail and formatting length.");
+  }
+
+  return {
+    score: Math.round(baseScore),
+    skills,
+    strengths,
+    improvements
+  };
+}
+
+// Download as text report
+function downloadReport() {
+  const text = `
+AI Resume Analyzer Report
+=========================
+Score: ${scoreValue.textContent}
+
+Strengths:
+- ${Array.from(strengthsList.children)
+    .map(li => li.textContent)
+    .join("\n- ")}
+
+Improvements:
+- ${Array.from(improvementsList.children)
+    .map(li => li.textContent)
+    .join("\n- ")}
+  `;
+  const blob = new Blob([text], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "Resume_Report.txt";
+  a.click();
+}
+
+// Copy feedback to clipboard
+function copyFeedback() {
+  const text = `
+Score: ${scoreValue.textContent}
+Strengths: ${Array.from(strengthsList.children)
+    .map(li => li.textContent)
+    .join(", ")}
+Improvements: ${Array.from(improvementsList.children)
+    .map(li => li.textContent)
+    .join(", ")}
+  `;
+  navigator.clipboard.writeText(text);
+  alert("Feedback copied to clipboard!");
+}
+
+// Hook buttons (created dynamically)
+document.addEventListener("click", e => {
+  if (e.target.id === "downloadBtn") downloadReport();
+  if (e.target.id === "copyBtn") copyFeedback();
 });
 
-const ctx3 = document.getElementById("growthChart");
-new Chart(ctx3, {
-  type: "radar",
-  data: {
-    labels: skillNames,
-    datasets: [{
-      label: "Growth Rate (%)",
-      data: growthValues,
-      backgroundColor: "#93c5fd55",
-      borderColor: "#1d4ed8"
-    }]
-  },
-  options: { responsive: true }
+// Analyze button
+analyzeBtn.addEventListener("click", () => {
+  const fileInput = document.getElementById("resumeFile");
+  const textInput = document.getElementById("resumeText");
+  let resumeText = textInput.value.trim();
+
+  if (!resumeText && fileInput.files.length > 0) {
+    const reader = new FileReader();
+    reader.onload = e => runMockAnalysis(e.target.result);
+    reader.readAsText(fileInput.files[0]);
+  } else if (resumeText) {
+    runMockAnalysis(resumeText);
+  } else {
+    alert("Please upload a file or paste your resume text!");
+  }
 });
+
+// Execute mock analysis
+function runMockAnalysis(text) {
+  loadingEl.classList.remove("hidden");
+  resultsSection.classList.add("hidden");
+
+  setTimeout(() => {
+    const result = mockAIAnalyze(text);
+
+    scoreValue.textContent = result.score;
+    animateSkillBars(result.skills);
+
+    strengthsList.innerHTML = "";
+    result.strengths.forEach(s => {
+      const li = document.createElement("li");
+      li.textContent = s;
+      strengthsList.appendChild(li);
+    });
+
+    improvementsList.innerHTML = "";
+    result.improvements.forEach(s => {
+      const li = document.createElement("li");
+      li.textContent = s;
+      improvementsList.appendChild(li);
+    });
+
+    document.querySelector(".actions").innerHTML = `
+      <button class="secondary-btn" id="copyBtn">📋 Copy Feedback</button>
+      <button class="secondary-btn" id="downloadBtn">⬇️ Download Report</button>
+    `;
+
+    loadingEl.classList.add("hidden");
+    resultsSection.classList.remove("hidden");
+  }, 1200);
+}
