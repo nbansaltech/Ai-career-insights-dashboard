@@ -3,52 +3,85 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Career Insights Dashboard</title>
+  <title>AI Resume Analyzer | Nishant Bansal</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-  <header>
-    <h1>AI Career Insights Dashboard</h1>
-    <p>Analyze tech skill trends, salaries, and demand using mock AI data.</p>
+  <!-- ========== HEADER ========== -->
+  <header class="navbar">
+    <h1 class="logo">AI Resume Analyzer</h1>
+    <button id="modeToggle" class="toggle-btn">🌙 Dark / Light</button>
   </header>
 
-  <main>
-    <section class="cards">
-      <div class="card">
-        <h2>Total Skills Analyzed</h2>
-        <p id="total-skills">--</p>
+  <!-- ========== MAIN ========== -->
+  <main class="main-container">
+    <!-- Upload / Input Section -->
+    <section class="upload-section">
+      <h2>Upload or Paste Your Resume</h2>
+      <p>Analyze your résumé instantly with mock AI insights — no API needed.</p>
+
+      <div class="input-options">
+        <input type="file" id="fileInput" accept=".txt,.pdf" />
+        <span>or paste text below ⬇</span>
+        <textarea id="resumeText" rows="10"
+          placeholder="Paste your resume content here..."></textarea>
       </div>
-      <div class="card">
-        <h2>Top Skill</h2>
-        <p id="top-skill">--</p>
-      </div>
-      <div class="card">
-        <h2>Average Salary</h2>
-        <p id="avg-salary">--</p>
+
+      <button id="analyzeBtn" class="analyze-btn">Analyze Resume</button>
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>AI is analyzing your resume…</p>
       </div>
     </section>
 
-    <section class="charts">
-      <div class="chart-container">
-        <h3>Skill Demand (2025)</h3>
-        <canvas id="skillChart"></canvas>
+    <!-- Results Section -->
+    <section id="resultsSection" class="results-section hidden">
+      <h2>📊 Analysis Report</h2>
+
+      <!-- Overall Score -->
+      <div class="score-container">
+        <div class="score-circle">
+          <div id="scoreValue" class="score-value">0</div>
+        </div>
+        <p>Overall AI Resume Score / 100</p>
       </div>
 
-      <div class="chart-container">
-        <h3>Average Salary by Skill ($)</h3>
-        <canvas id="salaryChart"></canvas>
+      <!-- Skill Scores -->
+      <div class="skills-container">
+        <h3>Skill Analysis</h3>
+        <div id="skillsBars" class="skills-bars"></div>
       </div>
 
-      <div class="chart-container">
-        <h3>Skill Growth Rate (%)</h3>
-        <canvas id="growthChart"></canvas>
+      <!-- Strengths / Weaknesses / Suggestions -->
+      <div class="feedback-sections">
+        <div class="feedback-box">
+          <h3>💪 Strengths</h3>
+          <ul id="strengthsList"></ul>
+        </div>
+
+        <div class="feedback-box">
+          <h3>⚠️ Weaknesses</h3>
+          <ul id="weaknessesList"></ul>
+        </div>
+
+        <div class="feedback-box">
+          <h3>🧩 Recommendations</h3>
+          <ul id="recommendationsList"></ul>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button id="copyBtn" class="secondary-btn">📋 Copy Feedback</button>
+        <button id="downloadBtn" class="secondary-btn">⬇️ Download Report</button>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>© 2025 Nishant Bansal — AI Career Insights Dashboard | Built with HTML, CSS & JS</p>
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <p>© 2025 Nishant Bansal — Smart Resume Analyzer Pro</p>
   </footer>
 
   <script src="script.js"></script>
